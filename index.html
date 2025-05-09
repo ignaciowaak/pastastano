@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Tano Pastas</title>
+<style>
+    /* Variables de color */
+    :root {
+      --main-green: #097d4c; /* Color principal: para logo, botones, títulos, etc. */
+      --light-yellow: #fdfbf0; /* Color secundario: para texto claro, algunos detalles */
+      --dark-matte: #1a1a1a; /* Fondo negro mate */
+      --text-color-light: #f2f2f7; /* Texto general claro sobre fondo oscuro */
+      --glass-bg: rgba(255, 255, 255, 0.08); /* Fondo transparente base para glassmorfismo */
+       /* Colores base para glassmorfismo de color */
+      --glass-green-base: 9, 125, 76; /* RGB de --main-green */
+      --glass-yellow-base: 253, 251, 240; /* RGB de --light-yellow */
+      --glass-shadow: rgba(0, 0, 0, 0.4); /* Sombra más notoria sobre fondo oscuro */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--dark-matte);
+      color: var(--text-color-light);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      scroll-behavior: smooth;
+    }
+    body { line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    img:not(.logo-img):not(.timeline-img):not(.whatsapp-icon) { /* Added .whatsapp-icon here */
+        max-width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 8px;
+    }
+    .timeline-img {
+         max-width: 100%;
+         height: auto;
+         display: block;
+         border-radius: 8px;
+         margin-top: 0.8rem;
+         margin-bottom: 0.5rem;
+    }
+
+
+    /* Estilos base para los contenedores principales y efecto scroll */
+    .container {
+        padding: 2rem 1rem;
+        margin: 1rem auto;
+        max-width: 940px;
+        border-radius: 16px;
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    .container.is-visible, .hero.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .hero {
+       text-align: center;
+       padding: 3rem 1rem;
+       background-image: url('fotos/pasta-hero.jpg'); /* Asegúrate de que esta ruta sea correcta */
+       background-size: cover;
+       background-position: center;
+       color: var(--text-color-light);
+       text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+       margin: 1rem auto;
+       max-width: 940px;
+       border-radius: 16px;
+    }
+     .hero.is-visible {
+        transform: scale(1) translateY(0);
+     }
+
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  padding-top: env(safe-area-inset-top);
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  box-shadow: 0 4px 20px var(--glass-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: 0 0 20px 20px;
+}
+.menu-toggle {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border:none;
+  font-size: 24px;
+  color: var(--text-color-light);
+  border-radius: 20px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.logo-img {
+    max-height: 40px; /* Ajusta según sea necesario */
+    width: auto;
+    vertical-align: middle;
+}
+
+
+header .btn-order {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--main-green);
+  color: #fff;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 0.2s;
+}
+header .btn-order:hover { background: #076a3c; }
+
+.btn-primary {
+  display: inline-block;
+  background: var(--main-green);
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  transition: background 0.2s;
+  margin-top: 1rem;
+}
+.btn-primary:hover { background: #076a3c; }
+
+nav ul { display: none; }
+nav ul.show {
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  box-shadow: 0 8px 32px var(--glass-shadow);
+  position: absolute;
+  top: calc(50px + env(safe-area-inset-top));
+  left: 1rem;
+  right: 1rem;
+  width: auto;
+  padding: 1rem;
+  gap: 1rem;
+  z-index: 999;
+  border-radius: 16px;
+}
+
+/* --- NUEVA REGLA PARA REDUCIR TRANSPARENCIA DEL MENÚ MÓVIL --- */
+/* Añadida después de la regla original para intentar asegurar la prioridad */
+nav ul.show {
+    background: rgba(var(--glass-green-base), 0.9); /* Menos transparente, usa el color verde base */
+    /* También podrías usar un color oscuro semi-transparente como rgba(0, 0, 0, 0.8); */
+    /* No repites backdrop-filter/box-shadow a menos que quieras modificarlos también */
+}
+/* --- FIN NUEVA REGLA --- */
+
+
+#nav-list li a {
+  color: var(--text-color-light); /* Usar color general para texto claro */
+  text-decoration: none;
+  padding: 0.5rem 0;
+  display: block;
+}
+
+#nav-list li a:hover {
+  color: var(--light-yellow); /* Color al pasar el ratón, puedes ajustar */
+}
+
+
+main { padding-top: calc(50px + env(safe-area-inset-top) + 1rem); }
+
+section { margin-bottom: 3rem; }
+
+.cards {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 1rem;
+}
+
+.card {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px var(--glass-shadow);
+  padding: 1rem;
+  text-align: center;
+  color: var(--text-color-light);
+  overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 1;
+    border-radius: 12px;
+}
+
+.card > * {
+    position: relative;
+    z-index: 2;
+}
+
+.card h3 { margin: 0.75rem 0; font-size: 1.1rem; color: var(--main-green); }
+.card p { color: var(--text-color-light); font-size: 0.9rem; }
+
+
+/* Estilos para la sección "Sobre Nosotros" */
+#about .about-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.about-text { flex: 1; color: var(--text-color-light); }
+.about-img img {
+  border-radius: 20px;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 10px var(--glass-shadow);
+}
+
+/* --- Estilos de la Línea de Tiempo (Alternada en Todas las Resoluciones) --- */
+#process-timeline h2, #process-timeline p.subtitle {
+    text-align: center;
+    color: var(--light-yellow);
+}
+#process-timeline h2 {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+#process-timeline p.subtitle {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.timeline {
+    position: relative;
+    padding: 1rem 0;
+    max-width: 800px; /* Puede necesitar ajuste en pantallas muy pequeñas */
+    margin: 0 auto;
+}
+
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    background: var(--main-green);
+    top: 0;
+    bottom: 0;
+    left: 50%; /* Línea centrada */
+    margin-left: -2px;
+    z-index: 0;
+}
+
+.timeline-item {
+    margin-bottom: 2.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 50%; /* Cada item ocupa la mitad */
+}
+
+.timeline-item:nth-child(odd) {
+    left: 0; /* Impares a la izquierda */
+    justify-content: flex-end; /* Contenido pegado a la derecha */
+    padding-right: 30px; /* Espacio entre contenido y marcador */
+}
+
+.timeline-item:nth-child(even) {
+    left: 50%; /* Pares a la derecha */
+    justify-content: flex-start; /* Contenido pegado a la izquierda */
+    padding-left: 30px; /* Espacio entre contenido y marcador */
+
+}
+
+
+.timeline-marker {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--light-yellow);
+    border: 4px solid var(--main-green);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--dark-matte);
+    font-size: 0.9rem;
+}
+
+.timeline-item:nth-child(odd) .timeline-marker {
+    right: -25px; /* Marcador a la derecha del item impar */
+}
+
+.timeline-item:nth-child(even) .timeline-marker {
+     left: -25px; /* Marcador a la izquierda del item par */
+}
+
+
+.timeline-content {
+    position: relative;
+    width: 100%; /* El contenido llena su mitad */
+    /* Glassmorfismo de COLOR */
+    background: rgba(var(--glass-green-base), 0.15);
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--glass-shadow);
+    padding: 1rem;
+    color: var(--text-color-light);
+    z-index: 1;
+}
+
+/* Alternar colores de glassmorfismo */
+.timeline-item:nth-child(odd) .timeline-content {
+     background: rgba(var(--glass-green-base), 0.15); /* Verde Transparente */
+}
+.timeline-item:nth-child(even) .timeline-content {
+     background: rgba(var(--glass-yellow-base), 0.08); /* Amarillo Transparente */
+}
+
+.timeline-content h3 {
+    margin-top: 0;
+    color: var(--light-yellow);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+/* --- Estilos para la NUEVA sección de WhatsApp --- */
+#whatsapp-order {
+    text-align: center; /* Centra el contenido */
+    padding: 3rem 1rem; /* Ajusta el padding si es necesario */
+    /* La clase .container ya le da el fondo oscuro y texto claro */
+}
+
+#whatsapp-order h2 {
+    color: var(--light-yellow); /* Color del título */
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+#whatsapp-order p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+}
+
+#whatsapp-order .whatsapp-link {
+    display: inline-flex; /* Permite alinear el ícono y texto */
+    align-items: center;
+    gap: 10px; /* Espacio entre ícono y texto */
+    background-color: #25D366; /* Color de fondo de WhatsApp */
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: background-color 0.5s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Sombra suave */
+}
+
+#whatsapp-order .whatsapp-link:hover {
+    background-color: #1da851; /* Un verde un poco más oscuro al pasar el ratón */
+}
+
+#whatsapp-order .whatsapp-icon {
+    width: 30px; /* Tamaño del ícono de WhatsApp */
+    height: 30px;
+    vertical-align: middle; /* Alineación vertical */
+}
+/* --- FIN Estilos NUEVA sección de WhatsApp --- */
+
+
+/* --- Media Queries --- */
+/* Solo necesitamos media query para ajustes generales como el header en desktop */
+@media (max-width: 500px) {
+    /* Ajustes para pantallas muy estrechas para evitar que se superponga */
+     .timeline-marker {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        border-width: 3px;
+    }
+     .timeline-item:nth-child(odd) .timeline-marker {
+        right: -20px; /* Ajusta posición del marcador */
+    }
+
+    .timeline-item:nth-child(even) .timeline-marker {
+         left: -20px; /* Ajusta posición del marcador */
+    }
+
+    .timeline-item:nth-child(odd) {
+        padding-right: 15px; /* Ajusta espacio */
+    }
+
+    .timeline-item:nth-child(even) {
+         padding-left: 15px; /* Ajusta espacio */
+    }
+
+     .timeline::after {
+         left: 50%; /* Mantener centrado */
+     }
+}
+
+
+@media (min-width: 769px) {
+  header {
+    height: auto;
+    padding: 1rem 1.5rem;
+    justify-content: space-between;
+    border-radius: 20px;
+  }
+  .menu-toggle { display: none;
+  /* color: white; Ya definido por var(--text-color-light) */
+  }
+  nav ul {
+    display: flex;
+    gap: 1rem;
+    position: static;
+    flex-direction: row;
+    background: none;
+    width: auto;
+    padding: 0;
+    /* color: var(--text-color-light); Ya definido por var(--text-color-light) */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+  }
+
+/* Asegurarse de que los colores del menú de desktop sigan siendo correctos */
+#nav-list li a {
+  color: var(--text-color-light); /* O el color que desees para desktop */
+}
+
+#nav-list li a:hover {
+  color: var(--light-yellow); /* Color al pasar el ratón en desktop */
+}
+
+
+  nav ul.show { display: flex; } /* Mantiene flex en desktop */
+
+  #about .about-section {
+      flex-wrap: nowrap;
+  }
+   .about-img {
+       flex-shrink: 0;
+   }
+    .logo-img {
+        max-height: 45px; /* Ajusta según sea necesario */
+    }
+    /* Ajusta el padding superior de main para el header más alto en desktop */
+    main { padding-top: calc(65px + env(safe-area-inset-top) + 1rem); }
+
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* No necesitamos reglas de timeline específicas aquí porque el layout alternado ya es por defecto */
+}
+
+
+footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  box-shadow: 0 -2px 10px var(--glass-shadow);
+  font-size: 0.85rem;
+  color: var(--text-color-light);
+}
+
+  </style>
+
+</head>
+<body>
+
+  <header>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="logo">
+      <img src="logo/0.png" alt="Logo Tano Pastas" class="logo-img">
+    </div>
+    <a href="#whatsapp-order" class="btn-order">Hacer tu pedido</a>
+    <nav>
+      <ul id="nav-list">
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#menu">Menú</a></li>
+        <li><a href="#process-timeline">Proceso</a></li>
+        <li><a href="#about">Nosotros</a></li>
+        <li><a href="#whatsapp-order">Contacto / Pedido</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero is-visible">
+      <h1>Tano Pastas: El sabor casero que amás</h1>
+      <p>Las mejores pastas frescas, hechas con amor y tradición. ¡Directo a tu mesa!</p>
+      <a href="#menu" class="btn-primary">Ver nuestro Menú</a>
+    </section>
+
+     <section id="menu" class="container">
+      <h2>Nuestro Menú</h2>
+      <div class="cards">
+        <div class="card menu-item-1">
+          <h3>Ravioles de Ricota y Nuez</h3>
+          <p>Rellenos cremosos, perfectos con salsa de manteca y salvia.</p>
+          </div>
+        <div class="card menu-item-2">
+          <h3>Ñoquis de Papa Caseros</h3>
+          <p>Suaves y deliciosos, ideales con tu salsa favorita.</p>
+           </div>
+         <div class="card menu-item-3">
+          <h3>Tallarines al Huevo</h3>
+          <p>Fideos frescos, clásicos e irresistibles.</p>
+           </div>
+         <div class="card menu-item-4">
+          <h3>Lasaña Boloñesa</h3>
+          <p>Capas de pasta, ragú y bechamel, gratinada al horno.</p>
+           </div>
+      </div>
+       <div style="text-align: center; margin-top: 2rem;">
+          <a href="#whatsapp-order" class="btn-primary">Hacer tu pedido</a>
+       </div>
+    </section>
+
+
+    <section id="process-timeline" class="container">
+        <h2>Línea del Tiempo</h2>
+        <p class="subtitle">Nuestro Proceso: De la Sémola a Tu Mesa</p>
+        <div class="timeline">
+
+            <div class="timeline-item">
+                 <div class="timeline-marker">1</div>
+                <div class="timeline-content">
+                    <h3>Selección de Ingredientes</h3>
+                    <p>Todo comienza con la elección cuidadosa de la mejor sémola de trigo duro, huevos frescos de campo y agua pura. La calidad de la materia prima es clave.</p>
+                    <img src="lt4.jpg" alt="Ingredientes frescos" class="timeline-img">
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                 <div class="timeline-marker">2</div>
+                <div class="timeline-content">
+                    <h3>Amasado Tradicional</h3>
+                    <p>Mezclamos y amasamos la masa con paciencia y técnica, logrando la elasticidad perfecta. Este paso es fundamental para la textura final de la pasta.</p>
+                     <img src="lt/3.jpg" alt="Masa de pasta amasada" class="timeline-img">
+                </div>
+            </div>
+
+             <div class="timeline-item">
+                 <div class="timeline-marker">3</div>
+                <div class="timeline-content">
+                    <h3>Reposo de la Masa</h3>
+                    <p>Dejamos que la masa repose en condiciones controladas. Este tiempo es esencial para que el gluten se relaje y la pasta sea fácil de trabajar y tenga una cocción ideal.</p>
+                     <img src="lt/2.jpg" alt="Masa reposando" class="timeline-img">
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                 <div class="timeline-marker">4</div>
+                <div class="timeline-content">
+                    <h3>Formado Artesanal</h3>
+                    <p>Según el tipo de pasta, la masa se estira y se corta a mano o se pasa por nuestras máquinas tradicionales para darle la forma característica: tallarines, ravioles, ñoquis, etc.</p>
+                     <img src="lt/1.jpg" alt="Formando pasta" class="timeline-img">
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                 <div class="timeline-marker">5</div>
+                <div class="timeline-content">
+                    <h3>Secado o Empaque</h3>
+                    <p>Algunas pastas se secan lentamente para preservar su sabor y textura, otras se empacan frescas en el día para que lleguen a tu mesa con la máxima calidad.</p>
+                     <img src="lt/1.jpg" alt="Pasta empacada" class="timeline-img">
+                </div>
+            </div>
+
+             <div class="timeline-item">
+                 <div class="timeline-marker">6</div>
+                <div class="timeline-content">
+                    <h3>¡El Resultado Final!</h3>
+                    <p>Nuestras pastas están listas para ser el centro de tu mesa. Un producto auténtico, con el sabor y la calidez de la cocina casera italiana, esperando a ser disfrutado.</p>
+                     <img src="fotos/proceso-final.jpg" alt="Plato de pasta terminado" class="timeline-img">
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+     <section id="about" class="container">
+      <h2>Sobre Nosotros</h2>
+      <div class="about-section">
+        <div class="about-text">
+           <p>En Tano Pastas, nos apasiona la cocina italiana y la tradición familiar. Desde hace años, nos dedicamos a elaborar pastas frescas con ingredientes de la más alta calidad, siguiendo recetas que han pasado de generación en generación.</p>
+           <p>Creemos que una buena comida reúne a la familia y amigos, y nuestras pastas están hechas para crear esos momentos especiales. Vení y descubrí el auténtico sabor casero.</p>
+        </div>
+        <div class="about-img">
+           <img src="logo/0.png" alt="Imagen de nuestra cocina o pastas frescas">
+        </div>
+      </div>
+    </section>
+
+    <section id="whatsapp-order" class="container">
+      <h2>Haz tu pedido por WhatsApp</h2>
+      <p>Es rápido y sencillo. Haz clic en el botón para iniciar una conversación.</p>
+      <a href="https://wa.me/message/HD274RKY2TWXA1" target="_blank" class="whatsapp-link">
+        <img src="redes/991bd1a8ce628ffc7c5663d6af7fdf6f-removebg-preview.png" alt="Logo WhatsApp" class="whatsapp-icon">
+        <span>Pedir por WhatsApp</span>
+      </a>
+    </section>
+    </main>
+
+  <footer>
+    <p>&copy; 2025 Tano Pastas. Hecho con amor y la mejor tradición italiana.</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+        document.getElementById('nav-list').classList.toggle('show');
+        // Opcional: para cerrar el menú si se hace clic fuera de él, podrías añadir un event listener aquí
+    }
+
+    // Ya no necesitamos esta función, los enlaces y el botón del header ahora usan directamente href="#whatsapp-order"
+    /*
+    function goToOrder() {
+        const contactSection = document.getElementById('contact'); // Cambiar a 'whatsapp-order' si se usara
+        if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+    */
+
+    // Esta función de formulario no se usa en el HTML proporcionado, pero la mantengo por si acaso.
+    function submitOrderForm(e) {
+        e.preventDefault();
+        alert('¡Gracias por tu pedido/consulta! Nos pondremos en contacto contigo pronto.');
+        e.target.reset();
+    }
+
+    // Script para el efecto de scroll (animar al entrar en la vista)
+    document.addEventListener('DOMContentLoaded', () => {
+        const containers = document.querySelectorAll('.container, .hero');
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // observer.unobserve(entry.target); // Descomentar si solo quieres que se anime una vez
+                } else {
+                    // Opcional: para que la animación se reinicie al salir y volver a entrar
+                    // entry.target.classList.remove('is-visible');
+                }
+            });
+        }, {
+            threshold: 0.1 // Porcentaje del elemento visible para disparar el evento
+        });
+
+        containers.forEach(container => {
+             // Si el elemento ya es visible al cargar la página, añádele la clase 'is-visible' inmediatamente
+            const rect = container.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                container.classList.add('is-visible');
+            } else {
+                 observer.observe(container);
+            }
+        });
+
+        // Cerrar el menú al hacer clic en un enlace (útil en móvil)
+        const navLinks = document.querySelectorAll('#nav-list a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                const navList = document.getElementById('nav-list');
+                if (navList.classList.contains('show')) {
+                    navList.classList.remove('show');
+                }
+            });
+        });
+    });
+
+  </script>
+
+</body>
+</html>
