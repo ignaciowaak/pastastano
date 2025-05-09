@@ -31,7 +31,7 @@
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
     /* MODIFICADO: Añadido .menu-item-img a la lista de exclusión para el borde redondeado general */
-    img:not(.logo-img):not(.timeline-img):not(.whatsapp-icon):not(.menu-item-img) {
+    img:not(.logo-img):not(.timeline-img):not(.whatsapp-icon):not(.menu-item-img):not(.promo-img) { /* Añadido .promo-img */
         max-width: 100%;
         height: auto;
         display: block;
@@ -171,14 +171,14 @@ nav ul.show {
   border-radius: 16px;
 }
 
-/* --- NUEVA REGLA PARA REDUCIR TRANSPARENCIA DEL MENÚ MÓVIL --- */
-/* Añadida después de la regla original para intentar asegurar la prioridad */
+/* --- REGLA PARA REDUCIR TRANSPARENCIA DEL MENÚ MÓVIL (MODIFICADA) --- */
+/* Esta regla ajusta la transparencia del menú móvil cuando está abierto */
 nav ul.show {
     background: rgba(var(--glass-green-base), 0.9); /* Menos transparente, usa el color verde base */
     /* También podrías usar un color oscuro semi-transparente como rgba(0, 0, 0, 0.8); */
     /* No repites backdrop-filter/box-shadow a menos que quieras modificarlos también */
 }
-/* --- FIN NUEVA REGLA --- */
+/* --- FIN REGLA MODIFICADA --- */
 
 
 #nav-list li a {
@@ -433,6 +433,105 @@ section { margin-bottom: 3rem; }
 /* --- FIN Estilos SECCIÓN de WhatsApp --- */
 
 
+/* --- Estilos para la NUEVA PUBLICIDAD POP-UP --- */
+.promo-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Fondo oscuro semi-transparente */
+    display: flex; /* Usar flexbox para centrar el contenido */
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    z-index: 2000; /* Asegurarse de que esté por encima de todo */
+    visibility: hidden; /* Inicialmente invisible */
+    opacity: 0; /* Inicialmente transparente */
+    transition: opacity 0.3s ease; /* Transición suave al mostrar/ocultar */
+}
+
+.promo-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
+.promo-content {
+    position: relative; /* Para posicionar la cruz de cierre */
+    background: var(--dark-matte); /* Fondo del pop-up */
+    color: var(--text-color-light);
+    padding: 1.5rem;
+    border-radius: 12px;
+    max-width: 90%; /* Ancho máximo en pantallas pequeñas */
+    width: 400px; /* Ancho deseado en pantallas más grandes */
+    text-align: center;
+    box-shadow: 0 8px 32px var(--glass-shadow);
+    transform: scale(0.9); /* Pequeña animación inicial */
+    transition: transform 0.3s ease;
+}
+
+.promo-overlay.visible .promo-content {
+    transform: scale(1); /* Escala normal al ser visible */
+}
+
+
+.promo-content h3 {
+    color: var(--light-yellow); /* Color del título de la promo */
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+    font-size: 1.5rem;
+}
+
+.promo-content p {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.promo-img {
+    max-width: 100%; /* La imagen no excede el ancho del contenedor */
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.promo-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    color: var(--text-color-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1; /* Alineación vertical del símbolo */
+    transition: color 0.2s ease, opacity 0.2s ease;
+    opacity: 0.5; /* Inicialmente menos visible/activo */
+    pointer-events: none; /* Inicialmente no interactuable */
+}
+
+.promo-close-btn.active {
+    opacity: 1; /* Más visible cuando está activo */
+    pointer-events: auto; /* Se vuelve interactuable */
+}
+
+.promo-close-btn:hover.active {
+    color: var(--light-yellow); /* Cambio de color al pasar el ratón (solo si está activo) */
+}
+
+/* Media query para ajustar el tamaño del pop-up en pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .promo-content {
+        padding: 1rem;
+        width: 95%;
+    }
+     .promo-content h3 { font-size: 1.3rem; }
+     .promo-content p { font-size: 0.9rem; }
+     .promo-close-btn { font-size: 20px; top: 5px; right: 5px; }
+}
+/* --- FIN Estilos NUEVA PUBLICIDAD POP-UP --- */
+
+
 /* --- Media Queries --- */
 /* Solo necesitamos media query para ajustes generales como el header en desktop */
 @media (max-width: 768px) { /* Ajustado el punto de quiebre para la línea de tiempo si es necesario */
@@ -577,25 +676,10 @@ footer {
           <h3>Fideos caseros </h3>
           <p>Fideos caseros estilo italiano </p>
           </div>
-       <!-- <div class="card menu-item-2">
-           <img src="ruta/a/imagen/noquis.jpg" alt="Imagen de Ñoquis de Papa" class="menu-item-img">
-          <h3>Ñoquis de Papa Caseros</h3>
-          <p>Suaves y deliciosos, ideales con tu salsa favorita.</p>
-           </div>
-         <div class="card menu-item-3">
-            <img src="ruta/a/imagen/tallarines.jpg" alt="Imagen de Tallarines" class="menu-item-img">
-          <h3>Tallarines al Huevo</h3>
-          <p>Fideos frescos, clásicos e irresistibles.</p>
-           </div>
-         <div class="card menu-item-4">
-           <img src="ruta/a/imagen/lasana.jpg" alt="Imagen de Lasaña Boloñesa" class="menu-item-img">
-          <h3>Lasaña Boloñesa</h3>
-          <p>Capas de pasta, ragú y bechamel, gratinada al horno.</p>
-           </div>
-      </div>
+       </div>
        <div style="text-align: center; margin-top: 2rem;">
           <a href="#whatsapp-order" class="btn-primary">Hacer tu pedido</a>
-       </div>-->
+       </div>
     </section>
 
 
@@ -690,6 +774,14 @@ footer {
     <p>&copy; 2025 Tano Pastas. Hecho con amor y la mejor tradición italiana.</p>
   </footer>
 
+  <div class="promo-overlay" id="promo-popup-overlay">
+      <div class="promo-content">
+          <button class="promo-close-btn" id="promo-close-btn">&times;</button>
+          <h3>¡Promoción del Día!</h3>
+          <p>¡Descubre nuestros fideos caseros especiales de hoy!</p>
+          <img src="pub/1.png" alt="Tomamos pedidos 📦" class="promo-img" id="promo-img">
+          </div>
+  </div>
   <script>
     function toggleMenu() {
         document.getElementById('nav-list').classList.toggle('show');
@@ -751,6 +843,45 @@ footer {
                 }
             });
         });
+
+
+        // --- Lógica para el Pop-up de Publicidad ---
+        const promoOverlay = document.getElementById('promo-popup-overlay');
+        const promoImg = document.getElementById('promo-img');
+        const promoCloseBtn = document.getElementById('promo-close-btn');
+
+        // Mostrar el pop-up al cargar la página (puede añadir un pequeño retraso si lo desea)
+        // setTimeout(() => { promoOverlay.classList.add('visible'); }, 500); // Ejemplo con retraso
+        promoOverlay.classList.add('visible'); // Mostrar inmediatamente
+
+        // Cuando la imagen dentro del pop-up haya cargado...
+        promoImg.addEventListener('load', () => {
+            // Activar el botón de cierre
+            promoCloseBtn.classList.add('active');
+            // Añadir el event listener al botón de cierre
+            promoCloseBtn.addEventListener('click', () => {
+                promoOverlay.classList.remove('visible'); // Ocultar el pop-up
+                 // Opcional: Eliminar el overlay del DOM después de un tiempo si no se va a reutilizar
+                 // setTimeout(() => { promoOverlay.remove(); }, 300); // Espera a que termine la transición CSS
+            });
+        });
+
+        // Manejar error de carga de imagen (opcional: si la imagen no carga, igual permitir cerrar)
+        promoImg.addEventListener('error', () => {
+             console.warn("Error loading promotional image. Close button will still be activated.");
+             promoCloseBtn.classList.add('active');
+             promoCloseBtn.addEventListener('click', () => {
+                promoOverlay.classList.remove('visible');
+             });
+        });
+
+        // Si la imagen ya está en caché, el evento 'load' podría no dispararse.
+        // Comprobamos si ya está completa al momento de añadir el listener.
+        if (promoImg.complete) {
+             promoImg.dispatchEvent(new Event('load')); // Disparar el evento load manualmente
+        }
+        // --- Fin Lógica Pop-up ---
+
     });
 
   </script>
