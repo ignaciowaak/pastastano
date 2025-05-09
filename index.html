@@ -30,7 +30,8 @@
     body { line-height: 1.6; }
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
-    img:not(.logo-img):not(.timeline-img):not(.whatsapp-icon) { /* Added .whatsapp-icon here */
+    /* MODIFICADO: Añadido .menu-item-img a la lista de exclusión para el borde redondeado general */
+    img:not(.logo-img):not(.timeline-img):not(.whatsapp-icon):not(.menu-item-img) {
         max-width: 100%;
         height: auto;
         display: block;
@@ -216,6 +217,9 @@ section { margin-bottom: 3rem; }
   text-align: center;
   color: var(--text-color-light);
   overflow: hidden;
+  display: flex; /* Añadido para organizar contenido interno */
+  flex-direction: column; /* Organizar elementos en columna */
+  align-items: center; /* Centrar contenido horizontalmente */
 }
 
 .card::before {
@@ -237,8 +241,20 @@ section { margin-bottom: 3rem; }
     z-index: 2;
 }
 
-.card h3 { margin: 0.75rem 0; font-size: 1.1rem; color: var(--main-green); }
-.card p { color: var(--text-color-light); font-size: 0.9rem; }
+.card h3 { margin: 0.75rem 0 0.5rem 0; font-size: 1.1rem; color: var(--main-green); } /* Ajustado margen inferior */
+.card p { color: var(--text-color-light); font-size: 0.9rem; margin-bottom: 0.5rem; } /* Ajustado margen inferior */
+
+
+/* --- NUEVO Estilo para las imágenes del menú --- */
+.menu-item-img {
+    width: 100px; /* Ajusta el tamaño según necesites */
+    height: 100px; /* Ajusta el tamaño según necesites (hacer cuadrada) */
+    object-fit: cover; /* Para asegurar que la imagen cubra el área sin distorsionarse */
+    border-radius: 8px; /* Opcional: bordes redondeados para las imágenes */
+    margin-bottom: 1rem; /* Espacio debajo de la imagen */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+/* --- FIN Nuevo Estilo --- */
 
 
 /* Estilos para la sección "Sobre Nosotros" */
@@ -328,7 +344,9 @@ section { margin-bottom: 3rem; }
     justify-content: center;
     font-weight: bold;
     color: var(--dark-matte);
-    font-size: 0.9rem;
+    /* --- MODIFICACIÓN AQUÍ: Reducción del tamaño de fuente del número --- */
+    font-size: 0.9rem; /* Reducido de 1.1rem para que sea más chico */
+    /* --- FIN MODIFICACIÓN --- */
 }
 
 .timeline-item:nth-child(odd) .timeline-marker {
@@ -369,7 +387,7 @@ section { margin-bottom: 3rem; }
     font-size: 1.2rem;
 }
 
-/* --- Estilos para la NUEVA sección de WhatsApp --- */
+/* --- Estilos para la SECCIÓN de WhatsApp --- */
 #whatsapp-order {
     text-align: center; /* Centra el contenido */
     padding: 3rem 1rem; /* Ajusta el padding si es necesario */
@@ -412,17 +430,17 @@ section { margin-bottom: 3rem; }
     height: 30px;
     vertical-align: middle; /* Alineación vertical */
 }
-/* --- FIN Estilos NUEVA sección de WhatsApp --- */
+/* --- FIN Estilos SECCIÓN de WhatsApp --- */
 
 
 /* --- Media Queries --- */
 /* Solo necesitamos media query para ajustes generales como el header en desktop */
-@media (max-width: 500px) {
+@media (max-width: 768px) { /* Ajustado el punto de quiebre para la línea de tiempo si es necesario */
     /* Ajustes para pantallas muy estrechas para evitar que se superponga */
      .timeline-marker {
         width: 40px;
         height: 40px;
-        font-size: 1rem;
+        font-size: 0.8rem; /* Ajustado también en mobile para que sea más chico */
         border-width: 3px;
     }
      .timeline-item:nth-child(odd) .timeline-marker {
@@ -444,6 +462,12 @@ section { margin-bottom: 3rem; }
      .timeline::after {
          left: 50%; /* Mantener centrado */
      }
+
+    /* Ajuste de espacio para el timeline en mobile */
+    .timeline-item:nth-child(odd) { padding-right: 20px; }
+    .timeline-item:nth-child(even) { padding-left: 20px; }
+    .timeline-item:nth-child(odd) .timeline-marker { right: -20px; }
+    .timeline-item:nth-child(even) .timeline-marker { left: -20px; }
 }
 
 
@@ -549,84 +573,90 @@ footer {
       <h2>Nuestro Menú</h2>
       <div class="cards">
         <div class="card menu-item-1">
-          <h3>Ravioles de Ricota y Nuez</h3>
-          <p>Rellenos cremosos, perfectos con salsa de manteca y salvia.</p>
+          <img src="menu/1.png" alt="Imagen de Fideos caseros" class="menu-item-img">
+          <h3>Fideos caseros </h3>
+          <p>Fideos caseros estilo italiano </p>
           </div>
-        <div class="card menu-item-2">
+       <!-- <div class="card menu-item-2">
+           <img src="ruta/a/imagen/noquis.jpg" alt="Imagen de Ñoquis de Papa" class="menu-item-img">
           <h3>Ñoquis de Papa Caseros</h3>
           <p>Suaves y deliciosos, ideales con tu salsa favorita.</p>
            </div>
          <div class="card menu-item-3">
+            <img src="ruta/a/imagen/tallarines.jpg" alt="Imagen de Tallarines" class="menu-item-img">
           <h3>Tallarines al Huevo</h3>
           <p>Fideos frescos, clásicos e irresistibles.</p>
            </div>
          <div class="card menu-item-4">
+           <img src="ruta/a/imagen/lasana.jpg" alt="Imagen de Lasaña Boloñesa" class="menu-item-img">
           <h3>Lasaña Boloñesa</h3>
           <p>Capas de pasta, ragú y bechamel, gratinada al horno.</p>
            </div>
       </div>
        <div style="text-align: center; margin-top: 2rem;">
           <a href="#whatsapp-order" class="btn-primary">Hacer tu pedido</a>
-       </div>
+       </div>-->
     </section>
 
 
     <section id="process-timeline" class="container">
         <h2>Línea del Tiempo</h2>
-        <p class="subtitle">Nuestro Proceso: De la Sémola a Tu Mesa</p>
+        <p class="subtitle">Nuestro Proceso: De la los Fideos caseros</p>
         <div class="timeline">
 
             <div class="timeline-item">
                  <div class="timeline-marker">1</div>
                 <div class="timeline-content">
-                    <h3>Selección de Ingredientes</h3>
-                    <p>Todo comienza con la elección cuidadosa de la mejor sémola de trigo duro, huevos frescos de campo y agua pura. La calidad de la materia prima es clave.</p>
-                    <img src="lt4.jpg" alt="Ingredientes frescos" class="timeline-img">
+                    <h3>Todo empieza con lo mas simple.</h3>
+                    <p>harina y huevos, los de siempre, los que estaban en la cocina de la abuela. Nada más. Quizás un poco de sal, quizás no. Lo importante es tener ganas y algo de tiempo.</p>
+                    <img src="lt/1.jpg" alt="Ingredientes frescos" class="timeline-img">
                 </div>
             </div>
 
             <div class="timeline-item">
                  <div class="timeline-marker">2</div>
                 <div class="timeline-content">
-                    <h3>Amasado Tradicional</h3>
-                    <p>Mezclamos y amasamos la masa con paciencia y técnica, logrando la elasticidad perfecta. Este paso es fundamental para la textura final de la pasta.</p>
-                     <img src="lt/3.jpg" alt="Masa de pasta amasada" class="timeline-img">
+                    <h3>Se hace un hueco en la harina</h3>
+                    <p>como un pequeño nido, y ahí van los huevos. Se mezclan con las manos, como se hizo siempre, dejando que la masa se forme sola, sin apuro.</p>
+                     <img src="lt/2.jpg" alt="Masa de pasta amasada" class="timeline-img">
                 </div>
             </div>
 
              <div class="timeline-item">
                  <div class="timeline-marker">3</div>
                 <div class="timeline-content">
-                    <h3>Reposo de la Masa</h3>
-                    <p>Dejamos que la masa repose en condiciones controladas. Este tiempo es esencial para que el gluten se relaje y la pasta sea fácil de trabajar y tenga una cocción ideal.</p>
-                     <img src="lt/2.jpg" alt="Masa reposando" class="timeline-img">
+                    <h3>Aparece el trabajo de verdad</h3>
+                    <p>amasar. La masa al principio se resiste, es rústica, tosca. Pero con paciencia se vuelve suave, tibia, viva. A cada pliegue, más parecida a lo que tiene que ser.</p>
+                     <img src="lt/3.jpg" alt="Masa reposando" class="timeline-img">
                 </div>
             </div>
 
             <div class="timeline-item">
                  <div class="timeline-marker">4</div>
                 <div class="timeline-content">
-                    <h3>Formado Artesanal</h3>
-                    <p>Según el tipo de pasta, la masa se estira y se corta a mano o se pasa por nuestras máquinas tradicionales para darle la forma característica: tallarines, ravioles, ñoquis, etc.</p>
-                     <img src="lt/1.jpg" alt="Formando pasta" class="timeline-img">
+                    <h3>Después viene la pausa</h3>
+                    <p>La masa necesita descansar, como si supiera que lo mejor está por venir. Se tapa, se deja en paz, y mientras tanto se puede poner el agua a calentar o simplemente mirar por la ventana.
+</p>
+                     <img src="lt/4.jpg" alt="Formando pasta" class="timeline-img">
                 </div>
             </div>
 
             <div class="timeline-item">
                  <div class="timeline-marker">5</div>
                 <div class="timeline-content">
-                    <h3>Secado o Empaque</h3>
-                    <p>Algunas pastas se secan lentamente para preservar su sabor y textura, otras se empacan frescas en el día para que lleguen a tu mesa con la máxima calidad.</p>
-                     <img src="lt/1.jpg" alt="Pasta empacada" class="timeline-img">
+                    <h3>y entonces llega el momento</h3>
+                    <p>Se afina, se alarga, se transforma en láminas que casi dejan pasar la luz. Y se cortan con cuidado, como se vio hacer tantas veces: largas cintas que parecen abrazos.</p>
+                     <img src="lt/5.jpg" alt="Pasta empacada" class="timeline-img">
                 </div>
             </div>
 
              <div class="timeline-item">
                  <div class="timeline-marker">6</div>
                 <div class="timeline-content">
-                    <h3>¡El Resultado Final!</h3>
-                    <p>Nuestras pastas están listas para ser el centro de tu mesa. Un producto auténtico, con el sabor y la calidez de la cocina casera italiana, esperando a ser disfrutado.</p>
-                     <img src="fotos/proceso-final.jpg" alt="Plato de pasta terminado" class="timeline-img">
+                    <h3>Finalmente</h3>
+                    <p>Apenas unos minutos. El olor que sube es el de casa, el de siempre. Se sirven rápido, porque la pasta no espera, y se comen mejor si alguien se ríe al lado.
+</p>
+                     <img src="lt/6.jpg" alt="Plato de pasta terminado" class="timeline-img">
                 </div>
             </div>
 
@@ -669,7 +699,7 @@ footer {
     // Ya no necesitamos esta función, los enlaces y el botón del header ahora usan directamente href="#whatsapp-order"
     /*
     function goToOrder() {
-        const contactSection = document.getElementById('contact'); // Cambiar a 'whatsapp-order' si se usara
+        const contactSection = document.getElementById('contact'); // Cambiar a 'whatsapp-order' if used
         if (contactSection) {
             contactSection.scrollIntoView({ behavior: 'smooth' });
         }
